@@ -135,37 +135,36 @@ public class SensorFragment extends android.support.v4.app.Fragment implements S
         if (usaSensori) {
             int steering = (int) values[1];
             int speed = (int) values[0];
-            if (Math.abs(steering) >= 20 && Math.abs(steering - oldvalues[1]) >= rumore) {
 
-                if (steering > 100) {
-                    steering = 100;
-                }
-                if (steering < -100) {
-                    steering = -100;
-                }
-                new SetSteeringAsynk().execute(steering);
-                oldvalues[1] = steering;
 
-                if (Math.abs(steering) <= 20 && oldvalues[1] != 0) {
+
+                if (steering > 35) {
+                    new SetSteeringAsynk().execute(1);
+                }
+                if (steering < -35) {
+                    new SetSteeringAsynk().execute(-1);
+                }
+                if (Math.abs(steering) <= 35){
                     new SetSteeringAsynk().execute(0);
-                    oldvalues[1] = 0;
                 }
 
-                if (Math.abs(speed) >= 25 && (Math.abs(speed - oldvalues[0]) >= rumore)) {
 
-                    if (speed > 100) {
-                        speed = 100;
-                    }
-                    if (speed < -100) {
-                        speed = -100;
-                    }
-                    new SetSpeedAsynk().execute(speed);
-                    oldvalues[0] = speed;
+            if (Math.abs(speed) >= 25 && (Math.abs(speed - oldvalues[0]) >= rumore)) {
+
+                if (speed > 100) {
+                    speed = 100;
                 }
-                if (Math.abs(speed) < 25 && oldvalues[0] != 0) {
-                    new SetSpeedAsynk().execute(0);
-                    oldvalues[0] = 0;
+                if (speed < -100) {
+                    speed = -100;
                 }
+                new SetSpeedAsynk().execute(speed);
+                oldvalues[0] = speed;
+            }
+
+
+            if (Math.abs(speed) < 30 && oldvalues[0] != 0) {
+                new SetSpeedAsynk().execute(0);
+                oldvalues[0] = 0;
             }
 
             textX.setText(String.valueOf(Math.round(values[0])));
