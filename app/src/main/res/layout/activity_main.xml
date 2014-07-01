@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:id="@+id/LinearLay1"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.prova.myapplication2.progetto_mk2.app.mainActivity"
+    android:background="@android:color/background_light"
+    >
+
+
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Impostazioni"
+        android:id="@+id/button2"
+        android:layout_weight="1"
+        android:textSize="35sp"
+        >
+        </Button>
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Guida!"
+        android:layout_weight="4"
+        android:textSize="35sp"
+
+        android:id="@+id/button1"
+
+
+        />
+
+</LinearLayout>

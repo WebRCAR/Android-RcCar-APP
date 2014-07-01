@@ -1,0 +1,163 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/LinearLay1">
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="IPV4"
+                android:id="@+id/textViewIP" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stato"
+                android:id="@+id/textViewStato" />
+        </LinearLayout>
+
+
+
+        <RelativeLayout
+            android:orientation="vertical"
+            android:id="@+id/rellay"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            tools:context="com.prova.myapplication2.progetto_mk2.app.SensorActivity">
+
+            <TextView
+                android:id="@+id/asseX"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Asse X:"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_marginTop="5dp" />
+
+            <TextView
+                android:id="@+id/asseY"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/asseX"
+                android:text="Asse Y:"
+                android:layout_marginTop="5dp"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/asseZ"
+                android:layout_below="@id/asseY"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Asse Z:"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_alignParentEnd="false" />
+
+
+            <SeekBar
+
+                android:max="120"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/seekBar"
+                android:indeterminate="false"
+                android:progress="90"
+                android:layout_alignTop="@+id/asseX"
+
+                android:layout_above="@+id/asseY"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_toRightOf="@+id/asseX" />
+
+            <SeekBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/seekBar2"
+                android:layout_alignTop="@+id/asseY"
+                android:layout_alignRight="@+id/seekBar"
+                android:layout_alignEnd="@+id/seekBar"
+                android:max="120"
+                android:progress="90"
+                android:indeterminate="false"
+                android:layout_toRightOf="@+id/asseX"
+                android:layout_alignBottom="@+id/asseY" />
+
+
+        </RelativeLayout>
+
+        <!--
+        <ViewFlipper
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/viewFlipper">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Calibra"
+                android:id="@+id/buttonCalibra" />
+
+        </ViewFlipper>
+ -->
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Motion sensor"
+                android:id="@+id/switchSetSensor"
+                android:checked="false"
+                android:onClick="onClick" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Comando inviato"
+                android:id="@+id/textViewCmdInviato" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="200dp">
+
+
+            <SeekBar
+                android:layout_width="146dp"
+                android:layout_height="match_parent"
+                android:id="@+id/seekBar4"
+                android:layout_gravity="right|center_vertical"
+                android:indeterminate="false"
+                android:rotation="90"
+                android:max="200"
+                android:progress="100" />
+
+            <SeekBar
+                android:layout_width="283dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/seekBar3"
+                android:layout_gravity="left|center_vertical"
+                android:max="200"
+                android:progress="100"
+                android:indeterminate="false" />
+        </FrameLayout>
+    </LinearLayout>
+
+</ScrollView>
