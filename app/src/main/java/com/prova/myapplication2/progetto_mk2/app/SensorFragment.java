@@ -7,7 +7,9 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,6 +21,16 @@ import android.widget.ToggleButton;
 
 import com.prova.myapplication2.progetto_mk2.app.async.SetSpeedAsynk;
 import com.prova.myapplication2.progetto_mk2.app.async.SetSteeringAsynk;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+
+import java.io.IOException;
+import java.net.URI;
 
 /**
  * Created by Monica on 03/06/2014.
@@ -34,6 +46,13 @@ public class SensorFragment extends android.support.v4.app.Fragment implements S
     TextView textX, textY, textZ;
     ToggleButton toggleEnable;
     boolean usaSensori = false;
+    private boolean suspending = false;
+    private MjpegView mv;
+    String URL;
+    private int width = 640;
+    private int height = 480;
+    private String ip_command = "?action=stream";
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,6 +62,9 @@ public class SensorFragment extends android.support.v4.app.Fragment implements S
         mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
+        mv = new MjpegView(getActivity());
+
+
 
         View view = inflater.inflate(R.layout.fragment_accelerometer, container, false);
         textX = (TextView) view.findViewById(R.id.textX);
@@ -50,6 +72,7 @@ public class SensorFragment extends android.support.v4.app.Fragment implements S
         textZ = (TextView) view.findViewById(R.id.textZ);
         toggleEnable = (ToggleButton) view.findViewById(R.id.toggleEnableMoveSensor);
         toggleEnable.setOnTouchListener(new View.OnTouchListener() {
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
@@ -83,6 +106,7 @@ public class SensorFragment extends android.support.v4.app.Fragment implements S
                 return true;
 
             }
+
         });
 
         final Switch switchSensor = (Switch) view.findViewById(R.id.switchSensor);
@@ -100,7 +124,14 @@ public class SensorFragment extends android.support.v4.app.Fragment implements S
                                         }
         );
 
+        URL= (String)"http://"+MySingleton.getInstance().hashMap.get("IP")+":8081/?action=stream";
 
+        mv = (MjpegView) view.findViewById(R.id.mv);
+        if(mv != null){
+            mv.setResolution(width, height);
+        }
+
+       new DoRead().execute(URL);
         return view;
     }
 
@@ -110,6 +141,12 @@ public class SensorFragment extends android.support.v4.app.Fragment implements S
         super.onResume();
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
         Toast.makeText(getActivity(), "Sensori avviati", Toast.LENGTH_SHORT).show();
+        if(mv!=null){
+            if(suspending){
+                new DoRead().execute(URL);
+                suspending = false;
+            }
+        }
     }
 
     @Override
@@ -117,9 +154,100 @@ public class SensorFragment extends android.support.v4.app.Fragment implements S
         super.onPause();
         mSensorManager.unregisterListener(this);
         Toast.makeText(getActivity(), "Sensori sosopesi", Toast.LENGTH_SHORT).show();
+        if(mv!=null){
+            if(mv.isStreaming()){
+                mv.stopPlayback();
+                suspending = true;
+            }
+        }
 
     }
 
+    boolean DEBUG =true;
+    public class DoRead extends AsyncTask<String, Void, MjpegInputStream> {
+        protected MjpegInputStream doInBackground(String... url) {
+
+            //TODO: if camera has authentication deal with it and don't just not work
+            HttpResponse res = null;
+            DefaultHttpClient httpclient = new DefaultHttpClient();
+            HttpParams httpParams = httpclient.getParams();
+            HttpConnectionParams.setConnectionTimeout(httpParams, 5 * 1000);
+            HttpConnectionParams.setSoTimeout(httpParams, 5*1000);
+            if(DEBUG) Log.d(" ", "1. Sending http request");
+            try {
+                res = httpclient.execute(new HttpGet(URI.create(url[0])));
+                if(DEBUG) Log.d(" ", "2. Request finished, status = " + res.getStatusLine().getStatusCode());
+                if(res.getStatusLine().getStatusCode()==401){
+                    //You must turn off camera User Access Control before this will work
+                    return null;
+                }
+                return new MjpegInputStream(res.getEntity().getContent());
+            } catch (ClientProtocolException e) {
+                if(DEBUG){
+                    e.printStackTrace();
+                    Log.d(" ", "Request failed-ClientProtocolException", e);
+                }
+                //Error connecting to camera
+            } catch (IOException e) {
+                if(DEBUG){
+                    e.printStackTrace();
+                    Log.d(" ", "Request failed-IOException", e);
+                }
+                //Error connecting to camera
+            } catch (Exception ex){
+                ex.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(MjpegInputStream result) {
+            mv.setSource(result);
+            if(result!=null){
+                result.setSkip(1);
+
+            }else{
+
+            }
+            mv.setDisplayMode(MjpegView.SIZE_BEST_FIT);
+            mv.showFps(false);
+        }
+    }
+/*
+    public class DoRead extends AsyncTask<String, Void, MjpegInputStream> {
+        protected MjpegInputStream doInBackground(String... url) {
+            //TODO: if camera has authentication deal with it and don't just not work
+            HttpResponse res = null;
+            DefaultHttpClient httpclient = new DefaultHttpClient();
+            Log.d(" ", "1. Sending http request");
+            try {
+                res = httpclient.execute(new HttpGet(URI.create(url[0])));
+                Log.d(" ", "2. Request finished, status = " + res.getStatusLine().getStatusCode());
+                if(res.getStatusLine().getStatusCode()==401){
+                    //You must turn off camera User Access Control before this will work
+                    return null;
+                }
+                return new MjpegInputStream(res.getEntity().getContent());
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+                Log.d(" ", "Request failed-ClientProtocolException", e);
+                //Error connecting to camera
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.d(" ", "Request failed-IOException", e);
+                //Error connecting to camera
+            }
+            return null;
+        }
+
+        protected void onPostExecute(MjpegInputStream result) {
+            mv.setSource(result);
+            mv.setDisplayMode(MjpegView.SIZE_STANDARD);   //SIZE_BEST_FIT
+            mv.showFps(true);
+        }
+    }
+
+
+*/
 
     float[] oldvalues = {0, 0, 0};
     int rumore = 8;

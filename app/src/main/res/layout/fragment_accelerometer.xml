@@ -10,6 +10,17 @@
 
     <!-- TODO: Update blank fragment layout -->
 
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <com.prova.myapplication2.progetto_mk2.app.MjpegView
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:id="@+id/mv"
+            android:layout_gravity="center"
+            />
+
+    </RelativeLayout>
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
@@ -49,16 +60,17 @@
         android:orientation="vertical">
 
 
-        <ToggleButton
-            android:layout_width="185dp"
-            android:layout_height="189dp"
-            android:text="New ToggleButton"
-            android:textOff="PREMI"
-            android:id="@+id/toggleEnableMoveSensor"
-            android:textSize="35sp"
-            android:checked="false" />
-
-
     </LinearLayout>
 
+    <ToggleButton
+        android:layout_width="185dp"
+        android:layout_height="189dp"
+        android:text="New ToggleButton"
+        android:textOff="PREMI"
+        android:id="@+id/toggleEnableMoveSensor"
+        android:textSize="35sp"
+        android:checked="false"
+        android:layout_gravity="right|bottom" />
+
 </FrameLayout>
+

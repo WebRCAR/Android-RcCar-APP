@@ -14,7 +14,7 @@ public class SetSpeedAsynk extends AsyncTask<Integer, Integer, Integer> {
 
     @Override
     protected Integer doInBackground(Integer[] params) {
-        Log.w("@@@SET SPEED@@@", "Eseguito");
+        Log.w("@@@SET SPEED@@@", "Eseguito: params[0] =  # "+params[0]+" #");
         MySingleton singleton = MySingleton.getInstance();
         try {
             ConnessionePi connessionePi = (ConnessionePi) singleton.hashMap.get("CONN");
